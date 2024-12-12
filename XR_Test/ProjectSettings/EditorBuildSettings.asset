@@ -1,0 +1,11 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes: []
+  m_configObjects:
+    Varjo.XR.Settings: {fileID: 11400000, guid: 8a57f22f1d4470e4790dbd2e84577020, type: 2}
+    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: 353f1891583b9b247976555eade2bf45, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: b583ba5b137d58f438b445d85f969ef6, type: 2}
