@@ -13,6 +13,7 @@ public class MarkerManager : MonoBehaviour
     private List<long> markerIds;
     private List<long> absentIds;
     private Dictionary<long, MarkerVisualizer> markerVisualizers;
+    private List<long> whiteListIds
 
     public VarjoMarker marker;
 
@@ -102,20 +103,31 @@ public class MarkerManager : MonoBehaviour
 
     void CreateMarkerVisualizer(VarjoMarker marker)
     {
-        GameObject go = Instantiate(markerPrefab);
-        markerTransform = go.transform;
-        go.name = marker.id.ToString();
-        markerTransform.SetParent(xrRig);
-        MarkerVisualizer visualizer = go.GetComponent<MarkerVisualizer>();
-        markerVisualizers.Add(marker.id, visualizer);
-        visualizer.SetMarkerData(marker);
-        if(marker.id == 350)
+        switch (marker.id)
         {
-            displayInfo.ShowInfo("Scanned Marker 350");
-        }
-        if(marker.id == 351)
-        {
-            displayInfo.ShowInfo("Scanned Marker 351");
+            case 100:
+            case 101:
+                if (whiteListIds.Contains(marker.id))
+                {
+                    SensorScannedEvent(marker.id);
+                }
+                break;
+
+            case 200:
+            case 201:
+                ParcelScannedEvent(marker.id);
+                break;
+
+            case 350:
+            case 351:
+                if (whiteListIds.Contains(marker.id))
+                {
+                    ShelfScannedEvent(marker.id);
+                }
+                break;
+
+            default:
+                break;
         }
     }
 
@@ -144,6 +156,77 @@ public class MarkerManager : MonoBehaviour
         }
         else{
             OnDisable();
+        }
+    }
+
+    void SensorScannedEvent(long markerId)
+    {
+        switch (markerId)
+        {
+            case 100:
+                whiteListIds.Add(350);
+                displayInfo.ShowInfo("Place in Shelf 350!");
+                break;
+
+            case 101:
+                whiteListIds.Add(351);
+                displayInfo.ShowInfo("Place in Shelf 351!");
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    void ParcelScannedEvent(long markerId)
+    {
+        switch (markerId)
+        {
+            case 200:
+                whiteListIds.Add(100);
+                displayInfo.ShowInfo("Install Sensor 100!");
+                break;
+
+            case 201:
+                whiteListIds.Add(101);
+                displayInfo.ShowInfo("Install Sensor 101!");
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    void ShelfScannedEvent(long markerId)
+    {
+        switch (markerId)
+        {
+            case 350:
+                GameObject go = Instantiate(markerPrefab);
+                markerTransform = go.transform;
+                go.name = marker.id.ToString();
+                markerTransform.SetParent(xrRig);
+                MarkerVisualizer visualizer = go.GetComponent<MarkerVisualizer>();
+                markerVisualizers.Add(marker.id, visualizer);
+                visualizer.SetMarkerData(marker);
+                displayInfo.ShowInfo("Update Inventory!");
+                whiteListIds.Clear();
+                break;
+
+            case 351:
+                GameObject go = Instantiate(markerPrefab);
+                markerTransform = go.transform;
+                go.name = marker.id.ToString();
+                markerTransform.SetParent(xrRig);
+                MarkerVisualizer visualizer = go.GetComponent<MarkerVisualizer>();
+                markerVisualizers.Add(marker.id, visualizer);
+                visualizer.SetMarkerData(marker);
+                displayInfo.ShowInfo("Update Inventory!");
+                whiteListIds.Clear();
+                break;
+
+            default:
+                break;
         }
     }
 
